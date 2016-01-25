@@ -9318,29 +9318,19 @@ static int idle_balance(struct rq *this_rq)
 		}
 
 		if (sd->flags & SD_BALANCE_NEWIDLE) {
-			t0 = sched_clock_cpu(this_cpu);
-
-			pulled_task = load_balance(this_cpu, this_rq,
-						   sd, CPU_NEWLY_IDLE,
-						   &continue_balancing);
-
-			domain_cost = sched_clock_cpu(this_cpu) - t0;
-			if (domain_cost > sd->max_newidle_lb_cost)
-				sd->max_newidle_lb_cost = domain_cost;
-
-			curr_cost += domain_cost;
+			pulled_task = load_balance(balance_cpu, balance_rq,
+					sd, CPU_NEWLY_IDLE, &balance);
 		}
 
-		update_next_balance(sd, 0, &next_balance);
-
-		/*
-		 * Stop searching for tasks to pull if there are
-		 * now runnable tasks on the balance rq or if
-		 * continue_balancing has been unset (only possible
-		 * due to active migration).
-		 */
-		if (pulled_task || this_rq->nr_running > 0 ||
-						!continue_balancing)
+		interval = msecs_to_jiffies(sd->balance_interval);
+		if (time_after(next_balance, sd->last_balance + interval))
+			next_balance = sd->last_balance + interval;
+			/*
+			* Stop searching for tasks to pull if there are
+			* now runnable tasks on this rq.
+			*/
+ 			if (pulled_task || this_rq->nr_running > 0) {
+			balance_rq->idle_stamp = 0;
 			break;
 	}
 	rcu_read_unlock();

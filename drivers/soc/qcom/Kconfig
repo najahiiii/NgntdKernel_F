@@ -956,6 +956,9 @@ config WCD_DSP_GLINK
 config STATE_NOTIFIER
         bool "State Notifier"
 
+config STATE_NOTIFIER
+        bool "State Notifier"
+
 source "drivers/soc/qcom/memshare/Kconfig"
 
 endif # ARCH_MSM

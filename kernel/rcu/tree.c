@@ -519,7 +519,7 @@ static void rcu_eqs_enter_common(struct rcu_dynticks *rdtp, long long oldval,
 	trace_rcu_dyntick(TPS("Start"), oldval, rdtp->dynticks_nesting);
 	if (!user && !is_idle_task(current)) {
 		struct task_struct *idle __maybe_unused =
-			idle_task(smp_processor_id());
+			idle_task(raw_smp_processor_id());
 
 		trace_rcu_dyntick(TPS("Error on entry: not idle task"), oldval, 0);
 		ftrace_dump(DUMP_ORIG);
@@ -664,7 +664,7 @@ static void rcu_eqs_exit_common(struct rcu_dynticks *rdtp, long long oldval,
 	trace_rcu_dyntick(TPS("End"), oldval, rdtp->dynticks_nesting);
 	if (!user && !is_idle_task(current)) {
 		struct task_struct *idle __maybe_unused =
-			idle_task(smp_processor_id());
+			idle_task(raw_smp_processor_id());
 
 		trace_rcu_dyntick(TPS("Error on exit: not idle task"),
 				  oldval, rdtp->dynticks_nesting);
@@ -1100,7 +1100,7 @@ static void print_other_cpu_stall(struct rcu_state *rsp)
 	for_each_possible_cpu(cpu)
 		totqlen += per_cpu_ptr(rsp->rda, cpu)->qlen;
 	pr_cont("(detected by %d, t=%ld jiffies, g=%ld, c=%ld, q=%lu)\n",
-	       smp_processor_id(), (long)(jiffies - rsp->gp_start),
+	       raw_smp_processor_id(), (long)(jiffies - rsp->gp_start),
 	       (long)rsp->gpnum, (long)rsp->completed, totqlen);
 	if (ndetected == 0)
 		pr_err("INFO: Stall ended before state dump start\n");
@@ -1128,7 +1128,7 @@ static void print_cpu_stall(struct rcu_state *rsp)
 	 */
 	pr_err("INFO: %s self-detected stall on CPU", rsp->name);
 	print_cpu_stall_info_begin();
-	print_cpu_stall_info(rsp, smp_processor_id());
+	print_cpu_stall_info(rsp, raw_smp_processor_id());
 	print_cpu_stall_info_end();
 	for_each_possible_cpu(cpu)
 		totqlen += per_cpu_ptr(rsp->rda, cpu)->qlen;
@@ -1150,7 +1150,7 @@ static void print_cpu_stall(struct rcu_state *rsp)
 	 * progress and it could be we're stuck in kernel space without context
 	 * switches for an entirely unreasonable amount of time.
 	 */
-	resched_cpu(smp_processor_id());
+	resched_cpu(raw_smp_processor_id());
 }
 
 static void check_cpu_stall(struct rcu_state *rsp, struct rcu_data *rdp)
@@ -2311,7 +2311,7 @@ static void rcu_do_batch(struct rcu_state *rsp, struct rcu_data *rdp)
 	 * races with call_rcu() from interrupt handlers.
 	 */
 	local_irq_save(flags);
-	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
+	WARN_ON_ONCE(cpu_is_offline(raw_smp_processor_id()));
 	bl = rdp->blimit;
 	trace_rcu_batch_start(rsp->name, rdp->qlen_lazy, rdp->qlen, bl);
 	list = rdp->nxtlist;
@@ -2569,7 +2569,7 @@ static void rcu_process_callbacks(struct softirq_action *unused)
 {
 	struct rcu_state *rsp;
 
-	if (cpu_is_offline(smp_processor_id()))
+	if (cpu_is_offline(raw_smp_processor_id()))
 		return;
 	trace_rcu_utilization(TPS("Start RCU core"));
 	for_each_rcu_flavor(rsp)
@@ -2597,7 +2597,7 @@ static void invoke_rcu_callbacks(struct rcu_state *rsp, struct rcu_data *rdp)
 
 static void invoke_rcu_core(void)
 {
-	if (cpu_online(smp_processor_id()))
+	if (cpu_online(raw_smp_processor_id()))
 		raise_softirq(RCU_SOFTIRQ);
 }
 
@@ -2613,11 +2613,11 @@ static void __call_rcu_core(struct rcu_state *rsp, struct rcu_data *rdp,
 	 * If called from an extended quiescent state, invoke the RCU
 	 * core in order to force a re-evaluation of RCU's idleness.
 	 */
-	if (!rcu_is_watching() && cpu_online(smp_processor_id()))
+	if (!rcu_is_watching() && cpu_online(raw_smp_processor_id()))
 		invoke_rcu_core();
 
 	/* If interrupts were disabled or CPU offline, don't invoke RCU core. */
-	if (irqs_disabled_flags(flags) || cpu_is_offline(smp_processor_id()))
+	if (irqs_disabled_flags(flags) || cpu_is_offline(raw_smp_processor_id()))
 		return;
 
 	/*

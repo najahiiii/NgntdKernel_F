@@ -464,7 +464,7 @@ static void
 probe_wakeup(void *ignore, struct task_struct *p, int success)
 {
 	struct trace_array_cpu *data;
-	int cpu = smp_processor_id();
+	int cpu = raw_smp_processor_id();
 	unsigned long flags;
 	long disabled;
 	int pc;

@@ -414,7 +414,7 @@ static enum hrtimer_restart hrtick(struct hrtimer *timer)
 {
 	struct rq *rq = container_of(timer, struct rq, hrtick_timer);
 
-	WARN_ON_ONCE(cpu_of(rq) != smp_processor_id());
+	WARN_ON_ONCE(cpu_of(rq) != raw_smp_processor_id());
 
 	raw_spin_lock(&rq->lock);
 	update_rq_clock(rq);
@@ -631,7 +631,7 @@ void resched_curr(struct rq *rq)
 
 	cpu = cpu_of(rq);
 
-	if (cpu == smp_processor_id()) {
+	if (cpu == raw_smp_processor_id()) {
 		set_tsk_need_resched(curr);
 		set_preempt_need_resched();
 		return;
@@ -649,7 +649,7 @@ void resched_cpu(int cpu)
 	unsigned long flags;
 
 	raw_spin_lock_irqsave(&rq->lock, flags);
-	if (cpu_online(cpu) || cpu == smp_processor_id())
+	if (cpu_online(cpu) || cpu == raw_smp_processor_id())
 		resched_curr(rq);
 	raw_spin_unlock_irqrestore(&rq->lock, flags);
 }
@@ -666,7 +666,7 @@ void resched_cpu(int cpu)
  */
 int get_nohz_timer_target(int pinned)
 {
-	int cpu = smp_processor_id();
+	int cpu = raw_smp_processor_id();
 	int i;
 	struct sched_domain *sd;
 
@@ -700,7 +700,7 @@ static void wake_up_idle_cpu(int cpu)
 {
 	struct rq *rq = cpu_rq(cpu);
 
-	if (cpu == smp_processor_id())
+	if (cpu == raw_smp_processor_id())
 		return;
 
 	if (set_nr_and_not_polling(rq->idle))
@@ -718,7 +718,7 @@ static bool wake_up_full_nohz_cpu(int cpu)
 	 * empty IRQ.
 	 */
 	if (tick_nohz_full_cpu(cpu)) {
-		if (cpu != smp_processor_id() ||
+		if (cpu != raw_smp_processor_id() ||
 		    tick_nohz_tick_stopped())
 			tick_nohz_full_kick_cpu(cpu);
 		return true;
@@ -735,7 +735,7 @@ void wake_up_nohz_cpu(int cpu)
 
 static inline bool got_nohz_idle_kick(void)
 {
-	int cpu = smp_processor_id();
+	int cpu = raw_smp_processor_id();
 
 	if (!test_bit(NOHZ_BALANCE_KICK, nohz_flags(cpu)))
 		return false;
@@ -4626,7 +4626,7 @@ void kick_process(struct task_struct *p)
 
 	preempt_disable();
 	cpu = task_cpu(p);
-	if ((cpu != smp_processor_id()) && task_curr(p))
+	if ((cpu != raw_smp_processor_id()) && task_curr(p))
 		smp_send_reschedule(cpu);
 	preempt_enable();
 }
@@ -4746,7 +4746,7 @@ ttwu_stat(struct task_struct *p, int cpu, int wake_flags)
 	struct rq *rq = this_rq();
 
 #ifdef CONFIG_SMP
-	int this_cpu = smp_processor_id();
+	int this_cpu = raw_smp_processor_id();
 
 	if (cpu == this_cpu) {
 		schedstat_inc(rq, ttwu_local);
@@ -4970,7 +4970,7 @@ static void ttwu_queue(struct task_struct *p, int cpu)
 	struct rq *rq = cpu_rq(cpu);
 
 #if defined(CONFIG_SMP)
-	if (sched_feat(TTWU_QUEUE) && !cpus_share_cache(smp_processor_id(), cpu)) {
+	if (sched_feat(TTWU_QUEUE) && !cpus_share_cache(raw_smp_processor_id(), cpu)) {
 		sched_clock_cpu(cpu); /* sync clocks x-cpu */
 		ttwu_queue_remote(p, cpu);
 		return;
@@ -5163,7 +5163,7 @@ static void try_to_wake_up_local(struct task_struct *p)
 	}
 
 	ttwu_do_wakeup(rq, p, 0);
-	ttwu_stat(p, smp_processor_id(), 0);
+	ttwu_stat(p, raw_smp_processor_id(), 0);
 out:
 	raw_spin_unlock(&p->pi_lock);
 	/* Todo : Send cpufreq notifier */
@@ -5903,8 +5903,8 @@ void sched_exec(void)
 
 	raw_spin_lock_irqsave(&p->pi_lock, flags);
 	curr_cpu = task_cpu(p);
-	dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), SD_BALANCE_EXEC, 0);
-	if (dest_cpu == smp_processor_id())
+	dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), SD_BALANCE_EXEC, 0, 1);
+	if (dest_cpu == raw_smp_processor_id())
 		goto unlock;
 
 	if (likely(cpu_active(dest_cpu))) {
@@ -6006,7 +6006,7 @@ static bool early_detection_notify(struct rq *rq, u64 wallclock)
  */
 void scheduler_tick(void)
 {
-	int cpu = smp_processor_id();
+	int cpu = raw_smp_processor_id();
 	struct rq *rq = cpu_rq(cpu);
 	struct task_struct *curr = rq->curr;
 	u64 wallclock;
@@ -6281,7 +6281,7 @@ static void __sched __schedule(void)
 
 need_resched:
 	preempt_disable();
-	cpu = smp_processor_id();
+	cpu = raw_smp_processor_id();
 	rq = cpu_rq(cpu);
 	rcu_note_context_switch(cpu);
 	prev = rq->curr;
@@ -8433,7 +8433,7 @@ void idle_task_exit(void)
 {
 	struct mm_struct *mm = current->active_mm;
 
-	BUG_ON(cpu_online(smp_processor_id()));
+	BUG_ON(cpu_online(raw_smp_processor_id()));
 
 	if (mm != &init_mm) {
 		switch_mm(mm, &init_mm, current);
@@ -8809,7 +8809,7 @@ static struct notifier_block migration_notifier = {
 
 static void __cpuinit set_cpu_rq_start_time(void)
 {
-	int cpu = smp_processor_id();
+	int cpu = raw_smp_processor_id();
 	struct rq *rq = cpu_rq(cpu);
 	rq->age_stamp = sched_clock_cpu(cpu);
 }
@@ -8874,7 +8874,7 @@ static int sched_cpu_inactive(struct notifier_block *nfb,
 
 static int __init migration_init(void)
 {
-	void *cpu = (void *)(long)smp_processor_id();
+	void *cpu = (void *)(long)raw_smp_processor_id();
 	int err;
 
 	/* Initialize migration for the boot CPU */
@@ -10526,7 +10526,7 @@ void __init sched_init_smp(void)
 	init_sched_domains(cpu_active_mask);
 	cpumask_andnot(non_isolated_cpus, cpu_possible_mask, cpu_isolated_map);
 	if (cpumask_empty(non_isolated_cpus))
-		cpumask_set_cpu(smp_processor_id(), non_isolated_cpus);
+		cpumask_set_cpu(raw_smp_processor_id(), non_isolated_cpus);
 	mutex_unlock(&sched_domains_mutex);
 
 	hotcpu_notifier(sched_domains_numa_masks_update, CPU_PRI_SCHED_ACTIVE);
@@ -10772,7 +10772,7 @@ void __init sched_init(void)
 	 * but because we are the idle thread, we just pick up running again
 	 * when this runqueue becomes "idle".
 	 */
-	init_idle(current, smp_processor_id());
+	init_idle(current, raw_smp_processor_id());
 
 	calc_load_update = jiffies + LOAD_FREQ;
 

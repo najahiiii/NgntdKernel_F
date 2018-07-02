@@ -4340,7 +4340,7 @@ bool workqueue_congested(int cpu, struct workqueue_struct *wq)
 	rcu_read_lock_sched();
 
 	if (cpu == WORK_CPU_UNBOUND)
-		cpu = smp_processor_id();
+		cpu = raw_smp_processor_id();
 
 	if (!(wq->flags & WQ_UNBOUND))
 		pwq = per_cpu_ptr(wq->cpu_pwqs, cpu);
@@ -4482,7 +4482,7 @@ void print_worker_info(const char *log_lvl, struct task_struct *task)
 
 static void wq_unbind_fn(struct work_struct *work)
 {
-	int cpu = smp_processor_id();
+	int cpu = raw_smp_processor_id();
 	struct worker_pool *pool;
 	struct worker *worker;
 

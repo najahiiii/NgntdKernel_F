@@ -1190,7 +1190,7 @@ static int smb358_get_prop_batt_status(struct smb358_charger *chip)
 	if ((reg & STATUS_C_CHARGING_MASK) &&
 			!(reg & STATUS_C_CHG_ERR_STATUS_BIT))
 		return POWER_SUPPLY_STATUS_CHARGING;
-		if ((reg & STATUS_C_CHG_HOLD_OFF_BIT) || !chip->power_ok)
+	if ((reg & STATUS_C_CHG_HOLD_OFF_BIT) || !chip->power_ok)
 		return POWER_SUPPLY_STATUS_NOT_CHARGING;
 
 	return POWER_SUPPLY_STATUS_DISCHARGING;
@@ -1845,7 +1845,7 @@ static int chg_uv(struct smb358_charger *chip, u8 status)
 			* USB insertion.
 			*/
 			rc = smb358_charging_disable(chip, SOC, false);
-			if (rc < 0)
+		if (rc < 0)
 				dev_err(chip->dev,
 					"Couldn't disable usb suspend rc = %d\n",
 									rc);

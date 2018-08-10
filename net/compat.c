@@ -546,7 +546,7 @@ struct compat_group_req {
 	__u32				 gr_interface;
 	struct __kernel_sockaddr_storage gr_group
 		__attribute__ ((aligned(4)));
-} __packed;
+} __packed __aligned(PAGE_SIZE);
 
 struct compat_group_source_req {
 	__u32				 gsr_interface;
@@ -554,7 +554,7 @@ struct compat_group_source_req {
 		__attribute__ ((aligned(4)));
 	struct __kernel_sockaddr_storage gsr_source
 		__attribute__ ((aligned(4)));
-} __packed;
+} __packed __aligned(PAGE_SIZE);
 
 struct compat_group_filter {
 	__u32				 gf_interface;
@@ -564,7 +564,7 @@ struct compat_group_filter {
 	__u32				 gf_numsrc;
 	struct __kernel_sockaddr_storage gf_slist[1]
 		__attribute__ ((aligned(4)));
-} __packed;
+} __packed __aligned(PAGE_SIZE);
 
 #define __COMPAT_GF0_SIZE (sizeof(struct compat_group_filter) - \
 			sizeof(struct __kernel_sockaddr_storage))

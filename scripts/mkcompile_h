@@ -53,7 +53,7 @@ else
 	LINUX_COMPILE_HOST=$KBUILD_BUILD_HOST
 fi
 
-UTS_VERSION="#$VERSION"
+UTS_VERSION="#69"
 CONFIG_FLAGS=""
 if [ -n "$SMP" ] ; then CONFIG_FLAGS="SMP"; fi
 if [ -n "$PREEMPT" ] ; then CONFIG_FLAGS="$CONFIG_FLAGS PREEMPT"; fi
@@ -78,8 +78,10 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
 
   if [ -z "$KBUILD_COMPILER_STRING" ]; then
     echo \#define LINUX_COMPILER \"`$CC -v 2>&1 | grep ' version ' | sed 's/[[:space:]]*$//'`\"
+    echo \#define LINUX_KEKS \"Built with feminimininimism power\"
   else
     echo \#define LINUX_COMPILER \"$KBUILD_COMPILER_STRING\"
+    echo \#define LINUX_KEKS \"Built with feminimininimism power\"
   fi;
 ) > .tmpcompile
 

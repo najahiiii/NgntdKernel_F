@@ -10,6 +10,8 @@
 # Normal rules
 #
 .*
+*.sh
+*.conf
 *.o
 *.o.*
 *.a
@@ -39,6 +41,8 @@ Module.symvers
 #
 # Top-level generic files
 #
+/hasil
+/out
 /tags
 /TAGS
 /linux

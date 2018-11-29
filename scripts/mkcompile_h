@@ -45,7 +45,7 @@ fi
 if test -z "$KBUILD_BUILD_USER"; then
 	LINUX_COMPILE_BY=$(whoami | sed 's/\\/\\\\/')
 else
-	LINUX_COMPILE_BY=$KBUILD_BUILD_USER
+	LINUX_COMPILE_BY=AlraKhesyaFauzan
 fi
 if test -z "$KBUILD_BUILD_HOST"; then
 	LINUX_COMPILE_HOST=`hostname`
@@ -53,7 +53,7 @@ else
 	LINUX_COMPILE_HOST=$KBUILD_BUILD_HOST
 fi
 
-UTS_VERSION="#69"
+UTS_VERSION="#0"
 CONFIG_FLAGS=""
 if [ -n "$SMP" ] ; then CONFIG_FLAGS="SMP"; fi
 if [ -n "$PREEMPT" ] ; then CONFIG_FLAGS="$CONFIG_FLAGS PREEMPT"; fi
@@ -78,10 +78,10 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
 
   if [ -z "$KBUILD_COMPILER_STRING" ]; then
     echo \#define LINUX_COMPILER \"`$CC -v 2>&1 | grep ' version ' | sed 's/[[:space:]]*$//'`\"
-    echo \#define LINUX_KEKS \"Built with feminimininimism power\"
+    echo \#define NUSANTARA_COMPILER \"Dibuat Pake Otak Bukan Pake Mulut\"
   else
     echo \#define LINUX_COMPILER \"$KBUILD_COMPILER_STRING\"
-    echo \#define LINUX_KEKS \"Built with feminimininimism power\"
+    echo \#define LINUX_KEKS \"Dibuat Pake Otak Bukan Pake Mulut\"
   fi;
 ) > .tmpcompile
 

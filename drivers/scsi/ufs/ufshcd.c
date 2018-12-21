@@ -5473,8 +5473,6 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
 	hba = container_of(work, struct ufs_hba, eeh_work);
 
 	pm_runtime_get_sync(hba->dev);
-	ufshcd_scsi_block_requests(hba);
-	scsi_block_requests(hba->host);
 
 	ufshcd_scsi_block_requests(hba);
 
@@ -5493,8 +5491,6 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
 		ufshcd_bkops_exception_event_handler(hba);
 
 out:
-	ufshcd_scsi_unblock_requests(hba);
-	scsi_unblock_requests(hba->host);
 
 	ufshcd_scsi_unblock_requests(hba);
 

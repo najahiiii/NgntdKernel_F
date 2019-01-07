@@ -1292,8 +1292,24 @@ out:
 
 static void destroy_devices(unsigned int nr)
 {
-	del_gendisk(zram->disk);
-	put_disk(zram->disk);
+	struct zram *zram;
+	unsigned int i;
+
+	for (i = 0; i < nr; i++) {
+		zram = &zram_devices[i];
+		/*
+		 * Remove sysfs first, so no one will perform a disksize
+		 * store while we destroy the devices
+		 */
+		sysfs_remove_group(&disk_to_dev(zram->disk)->kobj,
+				&zram_disk_attr_group);
+
+		zram_reset_device(zram);
+
+		blk_cleanup_queue(zram->disk->queue);
+		del_gendisk(zram->disk);
+		put_disk(zram->disk);
+	}
 
 	kfree(zram_devices);
 	unregister_blkdev(zram_major, "zram");

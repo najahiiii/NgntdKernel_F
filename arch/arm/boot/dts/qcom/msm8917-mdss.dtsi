@@ -41,9 +41,9 @@
 /delete-node/ &mdss_dsi1;
 
 &mdss_mdp {
-	qcom,max-bandwidth-low-kbps = <1800000>;
-	qcom,max-bandwidth-high-kbps = <1800000>;
-	qcom,max-bandwidth-per-pipe-kbps = <1000000>;
+	qcom,max-bandwidth-low-kbps = <3600000>;
+	qcom,max-bandwidth-high-kbps = <3600000>;
+	qcom,max-bandwidth-per-pipe-kbps = <2400000>;
 
 	qcom,mdss-intf-off = <0x00000000 0x0006B800>;
 	qcom,mdss-pingpong-off = <0x00071000>;

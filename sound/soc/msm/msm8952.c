@@ -48,8 +48,14 @@
 #define QUAT_MI2S_ID	(1 << 3)
 #define QUIN_MI2S_ID	(1 << 4)
 
-#define DEFAULT_MCLK_RATE 12288000
-
+#define DEFAULT_MCLK_RATE 9600000
+#if defined(CONFIG_C3N_SMB358)
+#define AW8736_MODE 5
+#elif defined(CONFIG_C3B_BQ2560X)
+#define AW8736_MODE 3
+#else
+#define AW8738_MODE 5
+#endif
 #define WCD_MBHC_DEF_RLOADS 5
 #define MAX_WSA_CODEC_NAME_LENGTH 80
 #define MSM_DT_MAX_PROP_SIZE 80

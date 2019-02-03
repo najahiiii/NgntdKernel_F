@@ -1145,7 +1145,7 @@ sapFsm
     switch (stateVar)
     {
         case eSAP_DISCONNECTED:
-            if (msg == eSAP_HDD_START_INFRA_BSS)
+            if ((msg == eSAP_HDD_START_INFRA_BSS))
             {
                 /* Transition from eSAP_DISCONNECTED to eSAP_CH_SELECT (both without substates) */
                 VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH, "In %s, new from state %s => %s",
@@ -1193,6 +1193,9 @@ sapFsm
                  sapContext->csrRoamProfile.ChannelInfo.numOfChannels = 1;
                  sapContext->csrRoamProfile.ChannelInfo.ChannelList = &sapContext->csrRoamProfile.operationChannel;
                  sapContext->csrRoamProfile.operationChannel = (tANI_U8)sapContext->channel;
+
+                 sapSignalHDDevent(sapContext, NULL,
+                                   eSAP_CHANNEL_CHANGED_EVENT, NULL);
                  vosStatus = sapGotoStarting( sapContext, sapEvent, eCSR_BSS_TYPE_INFRA_AP);
                  /* Transition from eSAP_CH_SELECT to eSAP_STARTING (both without substates) */
                  VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH, "In %s, from state %s => %s",
@@ -2172,8 +2175,8 @@ static VOS_STATUS sapGetChannelList(ptSapContext sapContext,
 #ifdef FEATURE_WLAN_CH_AVOID
                 for( i = 0; i < NUM_20MHZ_RF_CHANNELS; i++ )
                 {
-                    if( safeChannels[i].channelNumber ==
-                                rfChannels[loopCount].channelNum )
+                    if( (safeChannels[i].channelNumber ==
+                                rfChannels[loopCount].channelNum) )
                     {
                         /* Check if channel is safe */
                         if(VOS_TRUE == safeChannels[i].isSafe)

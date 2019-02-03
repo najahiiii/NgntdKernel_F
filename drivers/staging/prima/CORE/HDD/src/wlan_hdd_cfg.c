@@ -3952,6 +3952,14 @@ REG_VARIABLE( CFG_EXTSCAN_ENABLE, WLAN_PARAM_Integer,
                CFG_STA_AUTH_RETRIES_FOR_CODE17_MIN,
                CFG_STA_AUTH_RETRIES_FOR_CODE17_MAX ),
 
+  REG_VARIABLE( CFG_INDOOR_CHANNEL_SUPPORT_NAME, WLAN_PARAM_Integer,
+               hdd_config_t, indoor_channel_support,
+               VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+               CFG_INDOOR_CHANNEL_SUPPORT_DEFAULT,
+               CFG_INDOOR_CHANNEL_SUPPORT_MIN,
+               CFG_INDOOR_CHANNEL_SUPPORT_MAX),
+
+
   REG_VARIABLE( CFG_TRIGGER_NULLFRAME_BEFORE_HB_NAME, WLAN_PARAM_Integer,
                 hdd_config_t, trigger_nullframe_before_hb,
                 VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
@@ -4020,6 +4028,13 @@ REG_VARIABLE( CFG_EXTSCAN_ENABLE, WLAN_PARAM_Integer,
                 CFG_BTC_2M_DYN_LONG_NUM_BT_EXT_MIN,
                 CFG_BTC_2M_DYN_LONG_NUM_BT_EXT_MAX),
 
+  REG_VARIABLE(CFG_FORCE_RSNE_OVERRIDE_NAME, WLAN_PARAM_Integer,
+                hdd_config_t, force_rsne_override,
+                VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+                CFG_FORCE_RSNE_OVERRIDE_DEFAULT,
+                CFG_FORCE_RSNE_OVERRIDE_MIN,
+                CFG_FORCE_RSNE_OVERRIDE_MAX),
+
 };
 
 /*
@@ -4079,9 +4094,8 @@ static char *i_trim(char *str)
 
    /* Find the first non white-space*/
    for (ptr = str; i_isspace(*ptr); ptr++);
-
-   if (*ptr == '\0')
-       return str;
+      if (*ptr == '\0')
+         return str;
 
    /* This is the new start of the string*/
    str = ptr;
@@ -4089,9 +4103,8 @@ static char *i_trim(char *str)
    /* Find the last non white-space */
    ptr += strlen(ptr) - 1;
    for (; ptr != str && i_isspace(*ptr); ptr--);
-
-   /* Null terminate the following character */
-   ptr[1] = '\0';
+      /* Null terminate the following character */
+      ptr[1] = '\0';
 
    return str;
 }
@@ -4690,6 +4703,11 @@ static void print_hdd_cfg(hdd_context_t *pHddCtx)
             "Name = [%s] Value = [%u] ",
             CFG_ENABLE_POWERSAVE_OFFLOAD_NAME,
             pHddCtx->cfg_ini->enable_power_save_offload);
+
+    VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO_HIGH,
+            "Name = [%s] Value = [%u] ",
+            CFG_FORCE_RSNE_OVERRIDE_NAME,
+            pHddCtx->cfg_ini->force_rsne_override);
 }
 
 
@@ -5601,10 +5619,6 @@ v_BOOL_t hdd_update_config_dat( hdd_context_t *pHddCtx )
 
     if (ccmCfgSetInt(pHddCtx->hHal, WNI_CFG_MCAST_BCAST_FILTER_SETTING, pConfig->mcastBcastFilterSetting,
                      NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
-    {
-        fStatus = FALSE;
-        hddLog(LOGE,"Failure: Could not pass on WNI_CFG_MCAST_BCAST_FILTER_SETTING configuration info to CCM");
-    }
 #endif
 
      if (ccmCfgSetInt(pHddCtx->hHal, WNI_CFG_SINGLE_TID_RC, pConfig->bSingleTidRc,

@@ -1,5 +1,3 @@
-/* DTS_EAGLE START */
-
 #include <linux/module.h>   /* Needed by all modules */
 #include <linux/kernel.h>   /* Needed for KERN_INFO */
 #include <linux/init.h>     /* Needed for the macros */
@@ -650,5 +648,3 @@ module_exit(dts_eagle_drv_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Magesh Devaprakash <magesh.devaprakash@dts.com>");
 MODULE_DESCRIPTION("dts eagle drv() char driver");
-
-/* DTS_EAGLE END */

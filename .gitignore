@@ -33,6 +33,7 @@
 *.patch
 *.gcno
 *.ll
+build.sh
 modules.builtin
 Module.symvers
 *.dwo
@@ -41,6 +42,8 @@ Module.symvers
 # Top-level generic files
 #
 /out
+/dapur
+/gcc
 /anykernel
 /tags
 /TAGS

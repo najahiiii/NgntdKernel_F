@@ -44,6 +44,7 @@ Module.symvers
 /out
 /dapur
 /gcc
+/dragontc
 /anykernel
 /tags
 /TAGS

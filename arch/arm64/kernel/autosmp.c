@@ -64,8 +64,8 @@ static struct asmp_param_struct {
 } asmp_param = {
 	.delay = 100,
 	.scroff_single_core = true,
-	.max_cpus = 8,
-	.min_cpus = 1,
+	.max_cpus = 4,
+	.min_cpus = 2,
 	.cpufreq_up = 60,
 	.cpufreq_down = 40,
 	.cycle_up = 2,
@@ -145,7 +145,7 @@ static void __cpuinit asmp_work_fn(struct work_struct *work) {
 #ifdef CONFIG_POWERSUSPEND
 static void asmp_early_suspend(struct power_suspend *handler)
 #else
-static void asmp_early_suspend(struct early_suspend *h) 
+static void asmp_early_suspend(struct early_suspend *h)
 #endif
 {
 	unsigned int cpu;

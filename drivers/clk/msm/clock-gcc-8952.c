@@ -599,6 +599,9 @@ static struct clk_freq_tbl ftbl_gcc_venus0_vcodec0_clk[] = {
 	F( 228570000,	gpll0,	3.5,	0,	0),
 	F( 266670000,	gpll0,	3,	0,	0),
 	F( 308570000,	gpll6,	3.5,	0,	0),
+	F( 320000000,	gpll0,	2.5,	0,	0),
+	F( 360000000,	gpll6,	3,	0,	0),
+	F( 400000000,	gpll6,	3,	0,	0),
 	F_END
 };
 
@@ -608,7 +611,6 @@ static struct clk_freq_tbl ftbl_gcc_venus0_vcodec0_clk_8937[] = {
 	F( 308570000,          gpll6,  3.5,    0,     0),
 	F( 320000000,          gpll0,  2.5,    0,     0),
 	F( 360000000,          gpll6,    3,    0,     0),
-	F( 360000000,          gpll6,    3,    0,     0),
 	F( 400000000,          gpll6,    3,    0,     0),
 	F_END
 };
@@ -617,9 +619,10 @@ static struct clk_freq_tbl ftbl_gcc_venus0_vcodec0_clk_8917[] = {
 	F( 160000000,          gpll0,    5,    0,     0),
 	F( 200000000,          gpll0,    4,    0,     0),
 	F( 270000000,          gpll6,    4,    0,     0),
-	F( 308570000,          gpll6,  3.5,    0,     0),
-	F( 329140000,          gpll4_out,  3.5,    0,     0),
+	F( 308570000,          gpll6,	  3.5,  0,     0),
+	F( 329140000,          gpll4_out, 3.5,	0,     0),
 	F( 360000000,          gpll6,    3,    0,     0),
+	F( 400000000,	       gpll6,    3,    0,     0),
 	F_END
 };
 
@@ -634,7 +637,7 @@ static struct rcg_clk vcodec0_clk_src = {
 		.ops = &clk_ops_rcg_mnd,
 		VDD_DIG_FMAX_MAP5(LOWER, 133330000, LOW, 180000000,
 				  NOMINAL, 228570000, NOM_PLUS, 266670000,
-				  HIGH, 308570000),
+				  HIGH, 400000000),
 		CLK_INIT(vcodec0_clk_src.c),
 	},
 };

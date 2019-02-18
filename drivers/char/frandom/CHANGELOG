@@ -46,3 +46,8 @@ Updated sysctl interface to match current API
 Updated INSTALL file to reflect the new installation.
 
 Removed sysctl interface (since there's no use for it anymore)
+
+Jul 6 2017: Version 1.2: Sync with 4.12
+
+Change the header file of uaccess.h from asm/ to linux/
+

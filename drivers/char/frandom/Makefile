@@ -1,22 +1,13 @@
-# Makefile for frandom 1.1
+# Makefile for 2.6 kernels
 
-MOD_NAME = frandom
-
-ifneq ($(KERNELRELEASE), )
-
-obj-$(CONFIG_FRANDOM)		+= $(MOD_NAME).o
+ifneq ($(KERNELRELEASE),)
+obj-m	:= frandom.o
 
 else
+KDIR := /lib/modules/$(shell uname -r)/build
+PWD := $(shell pwd)
 
-all:
-	@$(MAKE) -C $(KDIR) \
-		SUBDIRS=$(CURDIR) modules
-
-clean:
-	rm -f *.o *.ko *.mod.* *~ .*.cmd
-
-install:
-	@$(MAKE) --no-print-directory -C $(KDIR) \
-		SUBDIRS=$(CURDIR) modules_install
-
+default:
+	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
 endif
+
